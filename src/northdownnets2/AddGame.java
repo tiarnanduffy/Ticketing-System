@@ -1,0 +1,373 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package northdownnets2;
+
+import BaseData.Game;
+import BaseData.GameList;
+import BaseData.Price;
+import BaseData.PriceList;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author DevUser
+ */
+public class AddGame extends javax.swing.JFrame {
+
+    public GameList gList;
+    public ArrayList<Game> games;
+    public Game thisGame;
+
+    public ArrayList<Price> prices;
+    public PriceList pList;
+    public Price thisPrice;
+
+    public int ticketID = 0;
+    public int gameID = 0;
+    public int level = 0;
+    public int section = 0;
+    double price = 40.0;
+
+    public AddGame(GameList gList) {
+        initComponents();
+        this.gList = gList;
+
+        pList = new PriceList();
+
+        prices = pList.getPrices();
+
+    }
+
+    public void addNewGame() {
+        //Boolean variable used to ensure text fields are not empty
+        boolean isEmpty = true;
+        
+        
+        //If any of the text fields are empty the game can not be entered into the database. The isEmpty variable will be set to false
+        if (txtAddOpponent.getText().trim().isEmpty()) {
+            isEmpty = false;
+            lblOpponentEmpty.setText("Empty field");
+        }
+        if (txtAddDate.getText().trim().isEmpty()) {
+            isEmpty = false;
+            lblDateEmpty.setText("Empty field");
+        }
+        if (txtAddTime.getText().trim().isEmpty()) {
+            isEmpty = false;
+            lblTimeEmpty.setText("Empty field");
+        }
+        if (txtAddDefaultPrice.getText().trim().isEmpty()) {
+            isEmpty = false;
+            lblPriceEmpty.setText("Empty field");
+        }
+        
+        //Boolean variable used to ensure text fields are in the correct format
+        boolean correctFormat = true;
+        
+        //Text field is cast as a character array so that each character can be checked to see if it is a letter or number
+        char[] priceCheck = txtAddDefaultPrice.getText().toString().trim().toCharArray();
+        for (int i = 0; i < priceCheck.length; i++) {
+            //If char is a letter the text is in the incorrect format and correctFormat is set to false
+            if (Character.isLetter(priceCheck[i])) {
+                JOptionPane.showMessageDialog(null, "Price can not contain letters");
+                correctFormat = false;
+                break;
+            }
+        }
+        
+        //If the price is less than £1.00 or greater than or equal to £100.00 correctFormat is set to false
+        if(Double.parseDouble(txtAddDefaultPrice.getText()) < 1.00 || Double.parseDouble(txtAddDefaultPrice.getText()) > 99.99) {
+            JOptionPane.showMessageDialog(null, "Price must be at least  £1.00 and less than £100.00");
+            correctFormat = false;
+        }
+
+        //The text fields are assigned to their corresponding variables which will be added to the gameList
+        String opponent = txtAddOpponent.getText().trim();
+        Date thisDate = (Date) txtAddDate.getValue();
+        Date thisTime = (Date) txtAddTime.getValue();
+        String description = txtAddDescription.getText();
+        Double defaultPrice = Double.parseDouble(txtAddDefaultPrice.getText());
+        
+        //The game is only added if no text fields are empty and are in the correct format
+        if (isEmpty == true && correctFormat == true) {
+            Game game = new Game(gameID, opponent, thisDate, thisTime, description, defaultPrice);
+            gameID = gList.addGame(game);
+            setPrices();
+        }
+    }
+
+    public void setPrices() {
+        
+        //The price entered in the default price text field is then added to the priceList
+        thisPrice = new Price(ticketID, gameID, level, section, price);
+
+        //The for loop is looped twice for each level
+        //This is repeated 20 times for each section
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 20; j++) {
+
+                level = i + 1;
+                section = j + 1;
+                price = Double.parseDouble(txtAddDefaultPrice.getText());
+
+                //Setter methods are used to define the price
+                thisPrice.setGameID(gameID);
+                thisPrice.setLevel(level);
+                thisPrice.setSection(section);
+                thisPrice.setPrice(price);
+                //gameID is the newly added game's ID, level is i+1, section is j+1, price is the default price
+
+                //The price for this section is added
+                pList.addPrice(thisPrice);
+            }
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtAddOpponent = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        btnAddGame = new javax.swing.JButton();
+        txtAddDate = new javax.swing.JFormattedTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtAddTime = new javax.swing.JFormattedTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtAddDescription = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtAddDefaultPrice = new javax.swing.JTextField();
+        lblOpponentEmpty = new javax.swing.JLabel();
+        lblDateEmpty = new javax.swing.JLabel();
+        lblTimeEmpty = new javax.swing.JLabel();
+        lblPriceEmpty = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Add Game");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setText("Add Game");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setText("Enter opponent:");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setText("Enter date:");
+
+        btnAddGame.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnAddGame.setText("Add Game");
+        btnAddGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddGameActionPerformed(evt);
+            }
+        });
+
+        txtAddDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+        txtAddDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAddDateActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel4.setText("Enter time:");
+
+        txtAddTime.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT))));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel5.setText("Enter Description:");
+
+        txtAddDescription.setText(" ");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel6.setText("Enter Default Price:");
+
+        txtAddDefaultPrice.setText(" ");
+        txtAddDefaultPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAddDefaultPriceActionPerformed(evt);
+            }
+        });
+
+        lblOpponentEmpty.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblOpponentEmpty.setForeground(new java.awt.Color(255, 0, 0));
+        lblOpponentEmpty.setText(" ");
+
+        lblDateEmpty.setForeground(new java.awt.Color(255, 0, 0));
+        lblDateEmpty.setText(" ");
+
+        lblTimeEmpty.setForeground(new java.awt.Color(255, 0, 0));
+        lblTimeEmpty.setText(" ");
+
+        lblPriceEmpty.setForeground(new java.awt.Color(255, 0, 0));
+        lblPriceEmpty.setText(" ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAddGame))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtAddDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 27, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtAddOpponent)
+                                    .addComponent(txtAddDate, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                                    .addComponent(txtAddTime))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblDateEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblTimeEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblOpponentEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtAddDefaultPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblPriceEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAddOpponent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblOpponentEmpty))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAddDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDateEmpty))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtAddTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTimeEmpty))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAddDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAddDefaultPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPriceEmpty))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addComponent(btnAddGame, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddGameActionPerformed
+        
+        addNewGame();
+    }//GEN-LAST:event_btnAddGameActionPerformed
+
+    private void txtAddDefaultPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAddDefaultPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAddDefaultPriceActionPerformed
+
+    private void txtAddDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAddDateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAddDateActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(AddGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(AddGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(AddGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AddGame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AddGame((GameList) null).setVisible(true);
+            }
+        });
+    }
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddGame;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblDateEmpty;
+    private javax.swing.JLabel lblOpponentEmpty;
+    private javax.swing.JLabel lblPriceEmpty;
+    private javax.swing.JLabel lblTimeEmpty;
+    private javax.swing.JFormattedTextField txtAddDate;
+    private javax.swing.JTextField txtAddDefaultPrice;
+    private javax.swing.JTextField txtAddDescription;
+    private javax.swing.JTextField txtAddOpponent;
+    private javax.swing.JFormattedTextField txtAddTime;
+    // End of variables declaration//GEN-END:variables
+}
